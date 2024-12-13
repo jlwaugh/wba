@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DID:WBA Interface</title>
+    <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>DID:WBA Test Interface</h1>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="upload">Upload</button>
+            <button class="tab" data-tab="retrieve">Retrieve</button>
+            <button class="tab" data-tab="test">Test Auth</button>
+        </div>
+
+        <div id="upload" class="tab-content active">
+            <div class="input-group flex">
+                <input type="text" id="userId" placeholder="User ID (16 characters)">
+                <button id="generateId">Generate</button>
+            </div>
+            <div class="input-group">
+                <textarea id="didDocument" placeholder="DID Document JSON"></textarea>
+            </div>
+            <button id="uploadBtn">Upload Document</button>
+        </div>
+
+        <div id="retrieve" class="tab-content">
+            <div class="input-group">
+                <input type="text" id="retrieveId" placeholder="User ID to retrieve">
+            </div>
+            <button id="retrieveBtn">Retrieve Document</button>
+        </div>
+
+        <div id="test" class="tab-content">
+            <div class="input-group">
+                <input type="text" id="authToken" placeholder="Bearer Token (optional)">
+            </div>
+            <div class="flex">
+                <button id="testNormalBtn">Test Normal Auth</button>
+                <button id="test401Btn">Test 401 Auth</button>
+            </div>
+        </div>
+
+        <div id="response"></div>
+    </div>
+</body>
+</html>
