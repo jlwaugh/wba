@@ -33,36 +33,6 @@ export async function uploadDIDDocument(
     }
 }
 
-// export async function uploadDIDDocument(userId: string, didDocument: string) {
-//     const url = `https://pi-unlimited.com/wba/user/${userId}/did.json`;
-//     try {
-//         const response = await fetch(url, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: didDocument
-//         });
-
-//         if (!response.ok) {
-//             const errorResponse = await response.text();
-//             throw new Error(`Error: ${response.status} - ${errorResponse}`);
-//         }
-
-//         const result = await response.json();
-//         console.log('DID Document uploaded successfully:', result);
-//     } catch (error) {
-//         console.error('Error uploading DID Document:', error);
-//     }
-// }
-
-export interface AuthResponse {
-    authorization: string;
-    auth_code: number;
-    error_message: string | null;
-    access_token: string;
-}
-
 export async function retrieveDIDDocument(
     did: string
 ): Promise<APIResponse<DIDDocument>> {

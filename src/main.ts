@@ -22,10 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 获取DOM元素
     const retrieveIdInput = document.getElementById('retrieveId') as HTMLInputElement;
     const generateDocBtn = document.getElementById('generateDocBtn');
-    const generatedDocEl = document.getElementById('generatedDocument') as HTMLTextAreaElement;
-    const generatedKeyEl = document.getElementById('generatedKey') as HTMLTextAreaElement;
     const uploadDidDocEl = document.getElementById('uploadDidDocument') as HTMLTextAreaElement;
-    const uploadPrivateKeyEl = document.getElementById('uploadPrivateKey') as HTMLTextAreaElement;
     const uploadBtn = document.getElementById('uploadBtn');
 
     // 初始化所有textarea的自动调整高度
@@ -68,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const generatedKeyEl = document.getElementById('generatedKey') as HTMLTextAreaElement;
                 const uploadDocEl = document.getElementById('uploadDidDocument') as HTMLTextAreaElement;
                 const uploadKeyEl = document.getElementById('uploadPrivateKey') as HTMLTextAreaElement;
-                const retrieveIdEl = document.getElementById('retrieveId') as HTMLInputElement;
+                const retrieveIdEl = document.getElementById('retrieveId') as HTMLTextAreaElement;
                 const testDidEl = document.getElementById('testDid') as HTMLTextAreaElement;
                 const authUrlEl = document.getElementById('authUrl') as HTMLTextAreaElement;
 
@@ -93,24 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTextareaValueAndResize(authUrlEl, 'https://agent-network-protocol.com/wba/test');
                 }
 
-                showResponse(document.body, 'Successfully generated DID document and private key. \n\nWARNING: This DID document and private key are for testing purposes only. Do not use in a production environment!');
+                showResponse('Successfully generated DID document and private key. \n\nWARNING: This DID document and private key are for testing purposes only. Do not use in a production environment!');
             } else {
-                showResponse(document.body, response.error || 'Failed to generate DID document', true);
+                showResponse(response.error || 'Failed to generate DID document', true);
             }
         } catch (error) {
-            showResponse(document.body, `Error generating DID document: ${error}`, true);
+            showResponse(`Error generating DID document: ${error}`, true);
         }
     });
 
     // Upload
     uploadBtn?.addEventListener('click', async () => {
         if (!uploadDidDocEl?.value) {
-            showResponse(document.body, 'Please generate a DID document first', true);
+            showResponse('Please generate a DID document first', true);
             return;
         }
 
         if (!validateDIDDocument(uploadDidDocEl.value)) {
-            showResponse(document.body, 'Invalid DID Document format', true);
+            showResponse('Invalid DID Document format', true);
             return;
         }
 
@@ -122,17 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await uploadDIDDocument(userId, uploadDidDocEl.value);
             
             if (response.ok) {
-                showResponse(document.body, 
-                    `Successfully uploaded DID document.\nYour DID is: ${didDoc.id}`
-                );
+                showResponse(`Successfully uploaded DID document.\nYour DID is: ${didDoc.id}`);
             } else {
-                showResponse(document.body, 
-                    response.error || `Upload failed with status: ${response.status}`,
-                    true
-                );
+                showResponse(response.error || `Upload failed with status: ${response.status}`, true);
             }
         } catch (error) {
-            showResponse(document.body, 'Failed to parse DID document', true);
+            showResponse('Failed to parse DID document', true);
         }
     });
 
@@ -141,21 +133,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     retrieveBtn?.addEventListener('click', async () => {
         if (!retrieveIdInput?.value) {
-            showResponse(document.body, 'Please enter a User ID', true);
+            showResponse('Please enter a User ID', true);
             return;
         }
 
         const response = await retrieveDIDDocument(retrieveIdInput.value);
         
         if (response.ok && response.data) {
-            showResponse(document.body, 
-                `Retrieved DID document success:\n${JSON.stringify(response.data, null, 2)}`
-            );
+            showResponse(`Retrieved DID document success:\n${JSON.stringify(response.data, null, 2)}`);
         } else {
-            showResponse(document.body, 
-                response.error || `Retrieval failed with status: ${response.status}`,
-                true
-            );
+            showResponse(response.error || `Retrieval failed with status: ${response.status}`, true);
         }
     });
 
@@ -222,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const authUrlEl = document.getElementById('authUrl') as HTMLTextAreaElement;
             
             if (!generatedDocEl.value || !generatedKeyEl.value || !authUrlEl.value) {
-                showResponse(document.body, 'Please generate DID document and provide auth URL first', true);
+                showResponse('Please generate DID document and provide auth URL first', true);
                 return;
             }
 
@@ -249,12 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 setValueAndResize(errorMessageEl, response.data.error_message || '');
                 setValueAndResize(accessTokenEl, response.data.access_token || '');
 
-                showResponse(document.body, 'Authentication test completed successfully');
+                showResponse('Authentication test completed successfully');
             } else {
-                showResponse(document.body, response.error || 'Authentication test failed', true);
+                showResponse(response.error || 'Authentication test failed', true);
             }
         } catch (error) {
-            showResponse(document.body, `Error during authentication test: ${error}`, true);
+            showResponse(`Error during authentication test: ${error}`, true);
         }
     });
 

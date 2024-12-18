@@ -6,7 +6,7 @@ export function generateRandomId(length: number = 16): string {
     ).join('');
 }
 
-export function showResponse(container: HTMLElement, message: string, isError = false): void {
+export function showResponse(message: string, isError = false): void {
     // 获取当前激活的tab内容区域
     const activeTab = document.querySelector('.tab-content.active');
     if (!activeTab) return;
