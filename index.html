@@ -11,40 +11,75 @@
         <h1>DID:WBA Test Interface</h1>
         
         <div class="tabs">
-            <button class="tab active" data-tab="upload">Upload</button>
+            <button class="tab active" data-tab="generate">Generate</button>
+            <button class="tab" data-tab="upload">Upload</button>
             <button class="tab" data-tab="retrieve">Retrieve</button>
             <button class="tab" data-tab="test">Test Auth</button>
         </div>
 
-        <div id="upload" class="tab-content active">
-            <div class="input-group flex">
-                <input type="text" id="userId" placeholder="User ID (16 characters)">
-                <button id="generateId">Generate</button>
+        <div id="generate" class="tab-content active">
+            <button id="generateDocBtn" class="action-button">Generate DID Document</button>
+            <div class="response-area"></div>
+            <div class="input-group">
+                <label>Generated DID Document (in JSON format):</label>
+                <textarea id="generatedDocument" placeholder="Generated DID Document" readonly></textarea>
             </div>
             <div class="input-group">
-                <textarea id="didDocument" placeholder="DID Document JSON"></textarea>
+                <label>Generated Private Key:</label>
+                <textarea id="generatedKey" placeholder="Generated Private Key" readonly></textarea>
             </div>
-            <button id="uploadBtn">Upload Document</button>
+        </div>
+
+        <div id="upload" class="tab-content">
+            <button id="uploadBtn" class="action-button">Upload Document</button>
+            <div class="response-area"></div>
+            <div class="input-group">
+                <label>DID Document to Upload (automatically filled from Generate tab):</label>
+                <textarea id="uploadDidDocument" placeholder="DID Document JSON" readonly></textarea>
+            </div>
+            <div class="input-group">
+                <label>Private Key (automatically filled from Generate tab):</label>
+                <textarea id="uploadPrivateKey" placeholder="Private Key" readonly></textarea>
+            </div>
         </div>
 
         <div id="retrieve" class="tab-content">
+            <button id="retrieveBtn" class="action-button">Retrieve Document</button>
+            <div class="response-area"></div>
             <div class="input-group">
-                <input type="text" id="retrieveId" placeholder="User ID to retrieve">
+                <label>DID (automatically filled from Generate tab):</label>
+                <input type="text" id="retrieveId" placeholder="DID from generated document" readonly>
             </div>
-            <button id="retrieveBtn">Retrieve Document</button>
         </div>
 
         <div id="test" class="tab-content">
+            <button id="testAuthBtn" class="action-button">Test Authentication</button>
+            <div class="response-area"></div>
             <div class="input-group">
-                <input type="text" id="authToken" placeholder="Bearer Token (optional)">
+                <label>DID (automatically filled from Generate tab):</label>
+                <textarea id="testDid" placeholder="DID from generated document" readonly></textarea>
             </div>
-            <div class="flex">
-                <button id="testNormalBtn">Test Normal Auth</button>
-                <button id="test401Btn">Test 401 Auth</button>
+            <div class="input-group">
+                <label>Auth Test URL (Use the account from pi-unlimited.com to authenticate on agent-network-protocol.com):</label>
+                <textarea id="authUrl" placeholder="https://agent-network-protocol.com/wba/test"></textarea>
+            </div>
+            <div class="input-group">
+                <label>HTTP Authorization Header:</label>
+                <textarea id="authorization" placeholder="Authorization header" readonly></textarea>
+            </div>
+            <div class="input-group">
+                <label>Auth Code:</label>
+                <textarea id="authCode" placeholder="Auth code" readonly></textarea>
+            </div>
+            <div class="input-group">
+                <label>Error Message:</label>
+                <textarea id="errorMessage" placeholder="Error message (if any)" readonly></textarea>
+            </div>
+            <div class="input-group">
+                <label>Access Token:</label>
+                <textarea id="accessToken" placeholder="Access token" readonly></textarea>
             </div>
         </div>
-
-        <div id="response"></div>
     </div>
 </body>
 </html>

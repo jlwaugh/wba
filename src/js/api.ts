@@ -1,6 +1,7 @@
 import type { DIDDocument, APIResponse, AuthResponse } from '../types';
 
 const BASE_URL = 'https://pi-unlimited.com';
+const AUTH_URL = 'agent-network-protocol.com'
 
 export async function uploadDIDDocument(
     userId: string, 
@@ -55,30 +56,48 @@ export async function uploadDIDDocument(
 //     }
 // }
 
+export interface AuthResponse {
+    authorization: string;
+    auth_code: number;
+    error_message: string | null;
+    access_token: string;
+}
+
 export async function retrieveDIDDocument(
-    userId: string
+    did: string
 ): Promise<APIResponse<DIDDocument>> {
     try {
-        const url = `${BASE_URL}/wba/user/${userId}/did.json`;
+        // Parse DID format: did:wba:example.com%3A3000:user:alice -> https://example.com:3000/user/alice/did.json
+        const parts = did.split(':');
+        if (parts.length < 5 || parts[0] !== 'did' || parts[1] !== 'wba') {
+            throw new Error('Invalid DID format');
+        }
+
+        // Decode the domain and port
+        const domain = decodeURIComponent(parts[2]);
+        // Join the remaining parts as the path
+        const path = parts.slice(3).join('/');
+        
+        const url = `https://${domain}/${path}/did.json`;
         console.log(`Fetching DID Document from: ${url}`);
 
-        const response = await fetch(url);
-        
-        let data: DIDDocument | undefined;
-        if (response.ok) {
-            data = await response.json() as DIDDocument;
-            console.log('DID Document retrieved successfully:', data);
-        } else {
-            console.error(`Failed to retrieve DID Document. Status: ${response.status}`);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         return {
-            ok: response.ok,
+            ok: true,
             status: response.status,
-            data
+            data: await response.json()
         };
     } catch (error) {
-        console.error('Error retrieving DID Document:', error);
         return {
             ok: false,
             status: 0,
@@ -88,33 +107,62 @@ export async function retrieveDIDDocument(
 }
 
 export async function testAuthentication(
-    endpoint: 'test' | 'test401',
-    authToken?: string
-): Promise<AuthResponse> {
+    didDocument: string,
+    privateKey: string
+): Promise<APIResponse<AuthResponse>> {
     try {
-        const headers = new Headers();
-        if (authToken) {
-            headers.append('Authorization', `Bearer ${authToken}`);
-        }
-
-        const response = await fetch(`${BASE_URL}/wba/${endpoint}`, {
-            headers
+        const response = await fetch(`https://${AUTH_URL}/wba/demo/auth`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                did_document: didDocument,
+                private_key: privateKey,
+                auth_url: 'https://agent-network-protocol.com/wba/test'
+            })
         });
 
-        const token = response.headers.get('Authorization');
-        const wwwAuthenticate = response.headers.get('WWW-Authenticate');
-
-        let data: string | undefined;
-        if (response.ok) {
-            data = await response.text();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        const data = await response.json();
         return {
-            ok: response.ok,
+            ok: true,
             status: response.status,
-            token: token ? token.replace('Bearer ', '') : undefined,
-            wwwAuthenticate: wwwAuthenticate ?? undefined,
             data
+        };
+    } catch (error) {
+        return {
+            ok: false,
+            status: 0,
+            error: error instanceof Error ? error.message : 'Unknown error occurred'
+        };
+    }
+}
+
+export async function generateDIDDocument(): Promise<APIResponse<{did_document: string, private_key: string}>> {
+    try {
+        const response = await fetch(`${BASE_URL}/wba/demo/generate`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+            ok: true,
+            status: response.status,
+            data: {
+                did_document: data.did_document,
+                private_key: data.private_key
+            }
         };
     } catch (error) {
         return {

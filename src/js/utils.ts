@@ -6,13 +6,21 @@ export function generateRandomId(length: number = 16): string {
     ).join('');
 }
 
-export function showResponse(
-    element: HTMLElement,
-    message: string,
-    isError: boolean = false
-): void {
-    element.className = `response ${isError ? 'error' : 'success'}`;
-    element.textContent = message;
+export function showResponse(container: HTMLElement, message: string, isError = false): void {
+    // 获取当前激活的tab内容区域
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+
+    // 获取当前tab中的响应区域
+    const responseArea = activeTab.querySelector('.response-area');
+    if (!responseArea) return;
+
+    // 清除之前的类
+    responseArea.classList.remove('success', 'error');
+    // 添加新的类
+    responseArea.classList.add(isError ? 'error' : 'success');
+    // 设置消息
+    responseArea.textContent = message;
 }
 
 export function validateDIDDocument(doc: string): boolean {
